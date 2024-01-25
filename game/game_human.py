@@ -12,6 +12,8 @@ INC_SPEED = pygame.USEREVENT + 1
 pygame.time.set_timer(INC_SPEED, 1000)
 global enemySpd
 enemySpd = movementUnit
+global points
+points = 0
 BLUE  = (0, 0, 255)
 RED   = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -25,7 +27,7 @@ class cargame:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         self.w = SCREEN_WIDTH
         self.h = SCREEN_HEIGHT
-        self.score = 0
+        self.score = points
         self.display = pygame.display.set_mode((self.w, self.h))
         pygame.display.set_caption('car')
         self.clock = pygame.time.Clock()
@@ -70,6 +72,7 @@ class cargame:
     def updateUi(self):
         self.bg.update()
         self.bg.render(self.display)
+        self.score = points
         displayScore = font_small.render(str(self.score), True, BLACK)
         self.display.blit(displayScore, (10,10))
         for entity in self.all_sprites:
@@ -85,10 +88,10 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = (random.randint(50, SCREEN_WIDTH-50), 0)  
 
     def move(self):
-        global score
+        global points
         self.rect.move_ip(0,enemySpd)
         if (self.rect.top > SCREEN_HEIGHT):
-            score += 1
+            points += 1
             self.rect.top = 0
             self.rect.center = (random.randint(50, SCREEN_WIDTH - 50), 0)
 
@@ -126,7 +129,7 @@ class Background():
             self.bgY2 = self.rectBGimg.height
             self.bgX2 = 0
  
-            self.moving_speed = 5
+            self.moving_speed = movementUnit
          
       def update(self):
         self.bgY1 += self.moving_speed
@@ -145,3 +148,4 @@ while True:
     gameover, score = game.playStep()
     if gameover:
         break
+print("final score: ", score)    
