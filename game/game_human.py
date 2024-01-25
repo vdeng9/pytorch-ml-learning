@@ -1,6 +1,7 @@
+#cargame for human
 import pygame
 from pygame.locals import *
-import random, time
+import random, time, os, sys
 
 pygame.init()
 
@@ -29,7 +30,7 @@ class cargame:
         self.h = SCREEN_HEIGHT
         self.score = points
         self.display = pygame.display.set_mode((self.w, self.h))
-        pygame.display.set_caption('car')
+        pygame.display.set_caption('car game')
         self.clock = pygame.time.Clock()
         self.player = Player()
         self.enemy = Enemy()
@@ -52,7 +53,7 @@ class cargame:
         gameover = False
         if pygame.sprite.spritecollideany(self.player,self.enemies):
             gameover = True
-            pygame.mixer.Sound('crash.wav').play()
+            pygame.mixer.Sound(os.path.join(sys.path[0], "crash.wav")).play()
             time.sleep(0.5)
                         
             self.display.fill(RED)
@@ -83,7 +84,7 @@ class cargame:
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__() 
-        self.image = pygame.image.load("Enemy.png")
+        self.image = pygame.image.load(os.path.join(sys.path[0], "Enemy.png"))
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(50, SCREEN_WIDTH-50), 0)  
 
@@ -98,7 +99,7 @@ class Enemy(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__() 
-        self.image = pygame.image.load("Player.png")
+        self.image = pygame.image.load(os.path.join(sys.path[0], "Player.png"))
         self.rect = self.image.get_rect()
         self.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100)
         
@@ -120,7 +121,7 @@ class Player(pygame.sprite.Sprite):
 
 class Background():
       def __init__(self):
-            self.bgimage = pygame.image.load('AnimatedStreet.png')
+            self.bgimage = pygame.image.load(os.path.join(sys.path[0], "AnimatedStreet.png"))
             self.rectBGimg = self.bgimage.get_rect()
  
             self.bgY1 = 0
