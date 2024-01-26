@@ -1,4 +1,4 @@
-#cargame for human
+#cargame for AI with RL
 import pygame
 from pygame.locals import *
 import random, time, os, sys
@@ -46,12 +46,29 @@ class cargame:
             if event.type == INC_SPEED:
                 global enemySpd
                 enemySpd += 0.5   
-                print(enemySpd)  
+                #print(enemySpd)  
             if event.type == QUIT:
                 pygame.quit()
 
+        #https://github.com/pygame/pygame/issues/3072 
+        #test2 = self.player.rect.inflate(5,5)
+        #test1 = self.player.rect
+        #print("1")
+        #print(test1)
+        #print("2")
+        #print(test2)    
+        # TODO figure out how to make a danger sensor for game state near danger      
+        # ^ figured it out but might need polishing TODO polish it LOL                          
+        for x in self.enemies:
+           print(self.player.dangerRect.colliderect(x.rect))
+        
+        #print("rect")
+        #print(self.player.rect)
+        #print("dangerRect")
+        #print(self.player.dangerRect)
+
         gameover = False
-        if pygame.sprite.spritecollideany(self.player,self.enemies):
+        if pygame.sprite.spritecollideany(self.player, self.enemies):            
             gameover = True
             pygame.mixer.Sound(os.path.join(sys.path[0], "crash.wav")).play()
             time.sleep(0.5)
@@ -101,7 +118,9 @@ class Player(pygame.sprite.Sprite):
         super().__init__() 
         self.image = pygame.image.load(os.path.join(sys.path[0], "Player.png"))
         self.rect = self.image.get_rect()
+        self.dangerRect = self.rect.inflate(10,10)
         self.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100)
+        self.dangerRect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100)
         
     def _move(self):
         pressed_keys = pygame.key.get_pressed()
@@ -109,15 +128,19 @@ class Player(pygame.sprite.Sprite):
         if self.rect.top > 0:
             if pressed_keys[K_UP] or pressed_keys[K_w]:
                 self.rect.move_ip(0, -movementUnit)
+                self.dangerRect.move_ip(0, -movementUnit)
         if self.rect.bottom < SCREEN_HEIGHT:
             if pressed_keys[K_DOWN] or pressed_keys[K_s]:
                 self.rect.move_ip(0, movementUnit)
+                self.dangerRect.move_ip(0, movementUnit)
         if self.rect.left > 50:
             if pressed_keys[K_LEFT] or pressed_keys[K_a]:
                 self.rect.move_ip(-movementUnit, 0)
+                self.dangerRect.move_ip(-movementUnit, 0)
         if self.rect.right < SCREEN_WIDTH - 50:        
             if pressed_keys[K_RIGHT] or pressed_keys[K_d]:
                 self.rect.move_ip(movementUnit, 0)
+                self.dangerRect.move_ip(movementUnit, 0)
 
 class Background():
       def __init__(self):
