@@ -27,11 +27,17 @@ game_over = font.render("Game Over", True, BLACK)
 class cargame:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         self.w = SCREEN_WIDTH
-        self.h = SCREEN_HEIGHT
-        self.score = points
+        self.h = SCREEN_HEIGHT        
         self.display = pygame.display.set_mode((self.w, self.h))
         pygame.display.set_caption('car game')
         self.clock = pygame.time.Clock()
+        self.reset()
+        
+    def reset(self):
+        global points, enemySpd
+        points = 0
+        enemySpd = movementUnit
+        self.score = points
         self.player = Player()
         self.enemy = Enemy()
         self.bg = Background()
@@ -50,22 +56,7 @@ class cargame:
             if event.type == QUIT:
                 pygame.quit()
 
-        #https://github.com/pygame/pygame/issues/3072 
-        #test2 = self.player.rect.inflate(5,5)
-        #test1 = self.player.rect
-        #print("1")
-        #print(test1)
-        #print("2")
-        #print(test2)    
-        # TODO figure out how to make a danger sensor for game state near danger      
-        # ^ figured it out but might need polishing TODO polish it LOL                          
-        for x in self.enemies:
-           print(self.player.dangerRect.colliderect(x.rect))
-        
-        #print("rect")
-        #print(self.player.rect)
-        #print("dangerRect")
-        #print(self.player.dangerRect)
+        # agent movement here
 
         gameover = False
         if pygame.sprite.spritecollideany(self.player, self.enemies):            
@@ -123,6 +114,7 @@ class Player(pygame.sprite.Sprite):
         self.dangerRect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100)
         
     def _move(self):
+        # modify for agent to do movement
         pressed_keys = pygame.key.get_pressed()
 
         if self.rect.top > 0:
@@ -168,8 +160,10 @@ class Background():
             display.blit(self.bgimage, (self.bgX2, self.bgY2))
 
 game = cargame(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+# remove and run from agent's .py
 while True:
     gameover, score = game.playStep()
     if gameover:
-        break
+        game.reset()
 print("final score: ", score)    
